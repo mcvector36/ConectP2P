@@ -33,8 +33,8 @@ def start_node(host, port):
     node.start()
     return node
 
-def get_public_address():
-    nat_type, external_ip, external_port = stun.get_ip_info(stun_host='stun.l.google.com', stun_port=19302)
+def get_public_address(stun_server):
+    nat_type, external_ip, external_port = stun.get_ip_info(stun_host=stun_server, stun_port=3478)
     print(f"Public IP: {external_ip}, Public Port: {external_port}")
     return external_ip, external_port
 
@@ -56,13 +56,14 @@ def register_with_bootstrap(bootstrap_host, bootstrap_port, public_ip, public_po
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='P2P Network Node')
     parser.add_argument('--host', type=str, default="0.0.0.0", help='Host address to bind')
-    parser.add_argument('--port', type=int, default=5000, help='Port to bind')
-    parser.add_argument('--bootstrap_host', type=str, required=True, help='Bootstrap server host')
-    parser.add_argument('--bootstrap_port', type=int, required=True, help='Bootstrap server port')
+    parser.add.argument('--port', type=int, default=5000, help='Port to bind')
+    parser.add.argument('--bootstrap_host', type=str, required=True, help='Bootstrap server host')
+    parser.add.argument('--bootstrap_port', type=int, required=True, help='Bootstrap server port')
+    parser.add.argument('--stun_server', type=str, required=True, help='STUN server host')
 
     args = parser.parse_args()
 
-    public_ip, public_port = get_public_address()
+    public_ip, public_port = get_public_address(args.stun_server)
     print(f"Starting local node with public address {public_ip}:{public_port}")
 
     # Register with the bootstrap server
